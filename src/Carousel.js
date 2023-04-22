@@ -5,7 +5,6 @@ const _items = [
   {
     dataitem: {
       title: 'Efren Reyes',
-      desc: 'Known as "The Magician", Efren Reyes is well regarded by many professionals as the greatest all around dataitem of all time.',
       image:
         'https://images.unsplash.com/photo-1591348122449-02525d70379b?ixlib=rb-1.2.1',
     },
@@ -13,7 +12,6 @@ const _items = [
   {
     dataitem: {
       title: "Ronnie O'Sullivan",
-      desc: "Ronald Antonio O'Sullivan is a six-time world champion and is the most successful dataitem in the history of snooker.",
       image:
         'https://images.unsplash.com/photo-1548802673-380ab8ebc7b7?ixlib=rb-1.2.1',
     },
@@ -21,7 +19,6 @@ const _items = [
   {
     dataitem: {
       title: 'Shane Van Boening',
-      desc: 'The "South Dakota Kid" is hearing-impaired and uses a hearing aid, but it has not limited his ability.',
       image:
         'https://images.unsplash.com/photo-1577023311546-cdc07a8454d9?ixlib=rb-1.2.1',
     },
@@ -29,7 +26,6 @@ const _items = [
   {
     dataitem: {
       title: 'Mike Sigel',
-      desc: 'Mike Sigel or "Captain Hook" as many like to call him is an American professional pool dataitem with over 108 tournament wins.',
       image:
         'https://images.unsplash.com/photo-1546190255-451a91afc548?ixlib=rb-1.2.1',
     },
@@ -37,7 +33,6 @@ const _items = [
   {
     dataitem: {
       title: 'Willie Mosconi',
-      desc: 'Nicknamed "Mr. Pocket Billiards," Willie Mosconi was among the first Billiard Congress of America Hall of Fame inductees.',
       image: 'https://i.postimg.cc/NfzMDVHP/willie-mosconi-slider.jpg',
     },
   },
@@ -79,7 +74,11 @@ const CarouselSlideItem = ({ pos, idx, activeIdx }) => {
   return (
     <li className="carousel__slide-item" style={item.styles}>
       <div className="carousel__slide-item-img-link">
-        <img src={item.dataitem.image} alt={item.dataitem.title} />
+        <img
+          src={item.dataitem.image}
+          loading="lazy"
+          alt={item.dataitem.title}
+        />
       </div>
       <div className="carousel-slide-item__body">
         <h4>{item.dataitem.title}</h4>
