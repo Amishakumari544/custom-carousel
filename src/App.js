@@ -1,7 +1,9 @@
 import React from 'react';
 import './style.css';
-import Carousel from './Carousel';
-import React, { Suspense } from "react";
+// import Carousel from './Carousel';
+import React, { Suspense, lazy } from 'react';
+
+const Carousel = lazy(() => import('./Carousel'));
 export default function App() {
   return (
     <div>
