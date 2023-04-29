@@ -1,5 +1,6 @@
-import React from 'react';
-const slideWidth = 30;
+import React, { useMemo, useState, useEffect, useCallback } from 'react';
+
+const slideWidth = 44;
 
 const _items = [
   {
@@ -38,36 +39,22 @@ const _items = [
   },
 ];
 
-const length = _items.length;
 _items.push(..._items);
-
-const sleep = (ms = 0) => {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-};
+// console.log(_items.length)
 
 const createItem = (position, idx) => {
+  // console.log(idx)
   const item = {
     styles: {
       transform: `translateX(${position * slideWidth}rem)`,
     },
+
     dataitem: _items[idx].dataitem,
   };
-
-  switch (position) {
-    case length - 1:
-    case length + 1:
-      item.styles = { ...item.styles, filter: 'grayscale(1)' };
-      break;
-    case length:
-      break;
-    default:
-      item.styles = { ...item.styles, opacity: 0 };
-      break;
-  }
+  console.log(item);
 
   return item;
 };
-
 const CarouselSlideItem = ({ pos, idx, activeIdx }) => {
   const item = createItem(pos, idx, activeIdx);
 
@@ -87,44 +74,61 @@ const CarouselSlideItem = ({ pos, idx, activeIdx }) => {
     </li>
   );
 };
-
-const keys = Array.from(Array(_items.length).keys());
+// It creates a new array with a specified length, and then maps each index value to the corresponding index in the new array.
+// const keys = Array.from(Array(_items.length).keys());
+const keys = [];
+for (let i = 0; i < _items.length; i++) {
+  keys.push(i);
+}
 
 const Carousel = () => {
-  const [items, setItems] = React.useState(keys);
-  const [isTicking, setIsTicking] = React.useState(false);
-  const [activeIdx, setActiveIdx] = React.useState(0);
-  const bigLength = items.length;
+  const [items, setItems] = useState(keys);
+  const [isTicking, setIsTicking] = useState(false);
+  const [activeIdx, setActiveIdx] = useState(0);
+  const bigLength = useMemo(() => items.length * 2, [items.length]);
 
-  const prevClick = (jump = 1) => {
-    if (!isTicking) {
-      setIsTicking(true);
-      setItems((prev) => {
-        return prev.map((_, i) => prev[(i + jump) % bigLength]);
-      });
-    }
-  };
+  const prevClick = useCallback(
+    (jump = 1) => {
+      if (!isTicking) {
+        setIsTicking(true);
+        setItems((prev) => prev.map((_, i) => prev[(i + jump) % bigLength]));
+      }
+    },
+    [isTicking, bigLength]
+  );
 
-  const nextClick = (jump = 1) => {
-    if (!isTicking) {
-      setIsTicking(true);
-      setItems((prev) => {
-        return prev.map((_, i) => prev[(i - jump + bigLength) % bigLength]);
-      });
-    }
-  };
+  const nextClick = useCallback(
+    (jump = 1) => {
+      if (!isTicking) {
+        setIsTicking(true);
+        setItems((prev) =>
+          prev.map((_, i) => prev[(i - jump + bigLength) % bigLength])
+        );
+      }
+    },
+    [isTicking, bigLength]
+  );
 
-  const handleDotClick = (idx) => {
-    if (idx < activeIdx) prevClick(activeIdx - idx);
-    if (idx > activeIdx) nextClick(idx - activeIdx);
-  };
+  const handleDotClick = useCallback(
+    (idx) => {
+      const diff = Math.abs(idx - activeIdx);
+      if (diff > 0) {
+        if (idx < activeIdx) prevClick(diff);
+        else nextClick(diff);
+      }
+    },
+    [activeIdx, prevClick, nextClick]
+  );
 
-  React.useEffect(() => {
-    if (isTicking) sleep(300).then(() => setIsTicking(false));
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (isTicking) setIsTicking(false);
+    }, 300);
+    return () => clearTimeout(timer);
   }, [isTicking]);
 
-  React.useEffect(() => {
-    setActiveIdx((length - (items[0] % length)) % length) // prettier-ignore
+  useEffect(() => {
+    setActiveIdx((length - (items[0] % length)) % length);
   }, [items]);
 
   return (
